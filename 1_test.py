@@ -1,6 +1,40 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import csv
+from PIL import Image, ImageTk
+
+class WelcomeWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Bienvenido")
+        self.root.geometry("500x300")  # Tamaño de la ventana de bienvenida
+        self.root.configure(background='light blue')
+
+        self.root.iconbitmap('C:/Users/labinf1.pasto/Documents/k/Protecyo/icono/moto.ico')
+
+        # Cargar la imagen de marca de agua
+        watermark_img = Image.open('watermark.png')  # Ruta a tu imagen de marca de agua
+        watermark_img = watermark_img.resize((400, 300), Image.LANCZOS)  # Redimensionar la imagen al tamaño de la ventana
+        self.watermark_photo = ImageTk.PhotoImage(watermark_img)
+
+        # Mostrar la imagen de marca de agua en la ventana de bienvenida
+        self.watermark_label = tk.Label(self.root, image=self.watermark_photo, bg='light blue')
+        self.watermark_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Etiqueta de bienvenida y descripción
+        ttk.Label(self.root, text="Bienvenido a tu App Segura de Domiciliarios", font=('Arial', 16, 'bold'), foreground='sea green', background='light blue').pack(pady=20)
+        ttk.Label(self.root,   text="Esta app te permitirá registrarte como domiciliario y ofrecer tus servicios de manera formal.\nTambién podrás calificar al domiciliario una vez hayas hecho uso de su servicio.",  wraplength=380,justify='center',  background='light blue', font=('Arial', 13)).pack(pady=10)
+
+        # Botón para cerrar la ventana y abrir la aplicación principal
+        ttk.Button(self.root, text="Iniciar App", command=self.close_and_open_main_app).pack(pady=20)
+
+    def close_and_open_main_app(self):
+        self.root.destroy()  # Cerrar la ventana de bienvenida
+        root = tk.Tk()
+        app = DomiciliarioApp(root)
+        root.mainloop()
+
+
 
 class DomiciliarioApp:
     def __init__(self, root):
@@ -184,6 +218,9 @@ class DomiciliarioApp:
 
 # Inicialización de la aplicación
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = DomiciliarioApp(root)
-    root.mainloop()
+    try:
+        root = tk.Tk()
+        app = WelcomeWindow(root)
+        root.mainloop()
+    except Exception as e:
+        messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
